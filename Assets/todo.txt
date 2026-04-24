@@ -1,0 +1,5 @@
+[ ] Heat map generation for player movement and interactions
+[x]  Simple tools for measuring distances and sizes within the level
+[x] Basic sight-line visualisation from specific points in the level
+[x] Easy-to-use interface for placing and editing common level design elements (spawn points, collectibles, etc.)
+[x] Simple report generation for level statistics (playable area size, number of obstacles, etc.)
