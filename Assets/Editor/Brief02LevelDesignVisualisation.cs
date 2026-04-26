@@ -36,21 +36,11 @@ public class Brief02LevelDesignVisualisation : EditorWindow
 
     private Vector2 sc;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        //delete before build
-    }
 
     private void OnEnable()
     {
         SceneView.duringSceneGui += OnScene;
         HeatmapTracker.UpdatePoints += UpdatePoints;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
     
     //distance calc
@@ -67,6 +57,19 @@ public class Brief02LevelDesignVisualisation : EditorWindow
 
     void OnGUI()
     {
+        if (groundTag == "")
+        {
+            groundTag = "Ground";
+        }
+        if (enemyTag == "")
+        {
+            enemyTag = "Enemy";
+        }
+        if (obstacleTag == "")
+        {
+            obstacleTag =  "Obstacle";
+        }
+        
         if (measuring)
         {
             if (measure1 == null && measure2 == null)
@@ -105,6 +108,7 @@ public class Brief02LevelDesignVisualisation : EditorWindow
         
         
         //texture1 = Camera.main.GetComponent<RawImage>().texture;
+        /*
         string[] todo;
         todo = System.IO.File.ReadAllLines("Assets/todo.txt");
 
@@ -114,19 +118,32 @@ public class Brief02LevelDesignVisualisation : EditorWindow
         {
             todolist += ""+ t + "\n";
         }
-        
+        */
         GUILayout.Label("Stakeholder Plugin", EditorStyles.largeLabel);
-        GUILayout.Label(todolist, EditorStyles.label);
+        //GUILayout.Label(todolist, EditorStyles.label);
 
         GUILayout.Label("Heatmap", EditorStyles.boldLabel);
-        if (Selection.activeGameObject.GetComponent<HeatmapTracker>() == null)
+        if (Selection.activeGameObject != null)
         {
-            if (GUILayout.Button("Add heatmap tracker"))
+            if (Selection.activeGameObject.GetComponent<HeatmapTracker>() == null)
             {
-                Selection.activeGameObject.AddComponent<HeatmapTracker>();
+                if (GUILayout.Button("Add heatmap tracker"))
+                {
+                    Selection.activeGameObject.AddComponent<HeatmapTracker>();
+                }
+            }
+            else
+            {
+                GUILayout.Label("Object already has the heatmap tool component.", EditorStyles.label);  
             }
         }
+        else
+        {
+            GUILayout.Label("Select an object to add the heatmap tool to.", EditorStyles.label);
 
+        }
+
+        /*
         string pnts="";
         if (points != null)
         {
@@ -139,6 +156,7 @@ public class Brief02LevelDesignVisualisation : EditorWindow
         sc = EditorGUILayout.BeginScrollView(sc);
         GUILayout.Label(pnts);
         EditorGUILayout.EndScrollView();
+        */
         GUILayout.Space(8);
 
         GUILayout.Label("Measure tool", EditorStyles.boldLabel);
@@ -166,17 +184,26 @@ public class Brief02LevelDesignVisualisation : EditorWindow
         }
 
         GUILayout.Space(8);
+        
+        GUILayout.Label("Line of sight tool", EditorStyles.boldLabel);
         if (Selection.activeGameObject != null)
         {
             if (Selection.activeGameObject.GetComponent<LDV_los>() == null)
             {
-                GUILayout.Label("Line of sight tool", EditorStyles.boldLabel);
                 if (GUILayout.Button("Add Line of sight tool"))
                 {
                     Selection.activeGameObject.AddComponent<LDV_los>();
                     //Selection.activeGameObject.GetComponent<LDV_los>().eyeLevel = Selection.activeGameObject.transform.position;
                 }
             }
+            else
+            {
+                GUILayout.Label("Object already has the line of sight tool component.", EditorStyles.label);
+            }
+        }
+        else
+        {
+            GUILayout.Label("Select an object to add the line of sight tool to.", EditorStyles.label);
         }
         
         
@@ -187,32 +214,40 @@ public class Brief02LevelDesignVisualisation : EditorWindow
         //GUILayout.BeginArea(new Rect(100, 100, 200, 200));
         scrollPos = EditorGUILayout.BeginScrollView(scrollPos, false, false);
 
-        for (int i = 0; i < prefabs.Count; i++)
+        if (prefabs.Count > 0)
         {
-            prefabs[i] = (GameObject)EditorGUILayout.ObjectField("Prefab", prefabs[i], typeof(GameObject), false);
-            if (GUILayout.Button("Spawn Prefab"))
+            for (int i = 0; i < prefabs.Count; i++)
             {
-                if (prefabs[i] != null)
+                prefabs[i] = (GameObject)EditorGUILayout.ObjectField("Prefab", prefabs[i], typeof(GameObject), false);
+                if (GUILayout.Button("Spawn Prefab"))
                 {
-                    Instantiate(prefabs[i], Vector3.zero, Quaternion.identity);
+                    if (prefabs[i] != null)
+                    {
+                        Instantiate(prefabs[i], Vector3.zero, Quaternion.identity);
+                    }
                 }
             }
         }
-        foreach (var p in prefabs)
+        else
         {
-            
+            GUILayout.Label("Add a prefab with the button below:", EditorStyles.label);
         }
+
         EditorGUILayout.EndScrollView();
         //GUILayout.EndArea();
         if (GUILayout.Button("Add new prefab"))
         {
             prefabs.Add(null);
         }
+
         if (GUILayout.Button("Remove prefab"))
         {
-            prefabs.RemoveAt(prefabs.Count - 1);
+            if (prefabs.Count > 0)
+            {
+                prefabs.RemoveAt(prefabs.Count - 1);
+            }
         }
-        
+
         GUILayout.Space(16);
         
         GUILayout.Label("Stats Reporter", EditorStyles.boldLabel);
