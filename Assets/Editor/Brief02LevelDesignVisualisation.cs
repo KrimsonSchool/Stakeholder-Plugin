@@ -214,23 +214,30 @@ public class Brief02LevelDesignVisualisation : EditorWindow
         //GUILayout.BeginArea(new Rect(100, 100, 200, 200));
         scrollPos = EditorGUILayout.BeginScrollView(scrollPos, false, false);
 
-        if (prefabs.Count > 0)
+        if (prefabs != null)
         {
-            for (int i = 0; i < prefabs.Count; i++)
+            if (prefabs.Count > 0)
             {
-                prefabs[i] = (GameObject)EditorGUILayout.ObjectField("Prefab", prefabs[i], typeof(GameObject), false);
-                if (GUILayout.Button("Spawn Prefab"))
+                for (int i = 0; i < prefabs.Count; i++)
                 {
-                    if (prefabs[i] != null)
+                    prefabs[i] = (GameObject)EditorGUILayout.ObjectField("Prefab", prefabs[i], typeof(GameObject), false);
+                    if (GUILayout.Button("Spawn Prefab"))
                     {
-                        Instantiate(prefabs[i], Vector3.zero, Quaternion.identity);
+                        if (prefabs[i] != null)
+                        {
+                            Instantiate(prefabs[i], Vector3.zero, Quaternion.identity);
+                        }
                     }
                 }
+            }
+            else
+            {
+                GUILayout.Label("Add a prefab with the button below:", EditorStyles.label);
             }
         }
         else
         {
-            GUILayout.Label("Add a prefab with the button below:", EditorStyles.label);
+            prefabs = new List<GameObject>();
         }
 
         EditorGUILayout.EndScrollView();
